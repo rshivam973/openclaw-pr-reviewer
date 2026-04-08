@@ -1,0 +1,51 @@
+{
+  "agents": {
+    "list": [
+      {
+        "id": "code-reviewer",
+        "default": true,
+        "name": "Code Reviewer",
+        "workspace": "~/.openclaw/workspace-code-reviewer",
+        "agentDir": "~/.openclaw/agents/code-reviewer/agent",
+        "sandbox": {
+          "mode": "all",
+          "scope": "session"
+        },
+        "tools": {
+          "allow": ["read", "exec", "write"],
+          "deny": ["browser", "canvas", "apply_patch", "edit", "process", "gateway"]
+        }
+      }
+    ]
+  },
+  "hooks": {
+    "enabled": true,
+    "token": "YOUR_WEBHOOK_TOKEN_HERE",
+    "path": "/hooks",
+    "maxBodyBytes": 524288,
+    "defaultSessionKey": "hook:pr-review",
+    "allowRequestSessionKey": true,
+    "allowedSessionKeyPrefixes": ["hook:pr-review:"],
+    "allowedAgentIds": ["code-reviewer"],
+    "mappings": [
+      {
+        "match": { "path": "pr-review" },
+        "action": "agent",
+        "agentId": "code-reviewer",
+        "wakeMode": "now",
+        "name": "PR Review",
+        "sessionKey": "hook:pr-review:{{repo}}:{{pr_number}}",
+        "messageTemplate": "PR: {{repo}}#{{pr_number}}\nTitle: {{pr_title}}\nDescription: {{pr_description}}\nAuthor: {{pr_author}}\nAction: {{action}}\nScope: {{scope}}\n\n{{#context_md}}## Project Context\n{{context_md}}\n\n{{/context_md}}## Diff\n```diff\n{{diff}}\n```",
+        "deliver": false,
+        "timeoutSeconds": 180
+      }
+    ]
+  },
+  "model": "anthropic/claude-sonnet-4-20250514",
+  "sessions": {
+    "pruning": {
+      "maxTurns": 10,
+      "strategy": "summarize"
+    }
+  }
+}

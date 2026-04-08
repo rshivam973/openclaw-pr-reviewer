@@ -1,0 +1,16 @@
+.git
+.env
+.env.*
+venv/
+.venv/
+__pycache__/
+.pytest_cache/
+.hypothesis/
+tests/
+openclaw-agent/
+*.md
+!README.md
+LICENSE
+CONTRIBUTING.md
+.dockerignore
+.gitignore
